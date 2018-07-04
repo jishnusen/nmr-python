@@ -50,5 +50,5 @@ def run():
         out = open(input("Filename: "), "w")
         csv = ""
         for i in range(0, g.size):
-            csv += f"{f[i]},{g[i]}\n"
+            csv += f"{float(f[i])},{float(g[i])}\n"
         out.write(csv)
