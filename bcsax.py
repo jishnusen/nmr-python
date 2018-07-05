@@ -8,7 +8,7 @@ def run():
     s11 = float(input("Enter sigma11 (ppm): "))
     s22 = float(input("Enter sigma22 (ppm): "))
     s33 = float(input("Enter sigma33 (ppm): "))
-    jfreq = float(input("Enter jump frequency (Hz)"))
+    jfreq = float(input("Enter jump frequency (Hz): "))
     t2 = float(input("Enter T2 (seconds): "))
     hi = float(input("Enter upper plot limit: "))
     lo = float(input("Enter lower plot limit: "))
