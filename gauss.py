@@ -1,15 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def run():
-    print("Running Gaussian Peak Exchange Simulation")
-    vlf = float(input("Larmor Frequency (MHz): "))
-    pos = np.fromstring(input("Enter peak positions (ppm, comma separated): "), sep=",") 
-    inp = np.fromstring(input("Enter intensities (comma separated): "), sep=",")
-    lo = float(input("Upper plot limit: "))
-    hi = float(input("Lower plot limit: "))
-    t2 = float(input("T2 (seconds): ")) 
-    jfreq = float(input("Jump Frequency (Hz): "))
+def run(vlf, pos, inp, lo, hi, t2, jfreq):
+    # print("Running Gaussian Peak Exchange Simulation")
+    # vlf = float(input("Larmor Frequency (MHz): "))
+    pos = np.fromstring(pos, sep=",") 
+    inp = np.fromstring(inp, sep=",")
+    # lo = float(input("Upper plot limit: "))
+    # hi = float(input("Lower plot limit: "))
+    # t2 = float(input("T2 (seconds): ")) 
+    # jfreq = float(input("Jump Frequency (Hz): "))
 
     pos = pos / vlf
     vlf = vlf * 2. * np.pi
@@ -42,6 +42,8 @@ def run():
     g = np.absolute(g)
     f = f/vlf
     g = g/np.amax(g)
+    
+    return f,g
 
     gen_data = plt.plot(f,g,label="Simulation") 
 

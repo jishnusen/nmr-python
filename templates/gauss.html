@@ -1,0 +1,116 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.0/papaparse.js"></script>
+<script>window.jQuery || document.write('<script src="{{
+  url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  let fit_params = {};
+  let csvdata = "";
+</script>
+
+<script>
+let text = "";
+</script>
+
+<style>
+div.element {
+    padding-top: 5px;
+}
+</style>
+
+<form id="data">
+    <div><label for="vlf">vlf </label>
+        <input id="vlf" type="text"></label></div>
+
+    <div class="element"><label for="pos">pos </label>
+        <input id="pos" type="text"></label></div>
+
+	<div class="element"><label for="inp">inp </label>
+        <input id="inp" type="text"></label></div>
+
+	<div class="element"><label for="jfreq">jfreq </label>
+        <input id="jfreq" type="text"></label></div>
+    
+	<div class="element"><label for="t2">t2 </label>
+        <input id="t2" type="text"></label></div>
+
+	<div class="element"><label for="hi">hi </label>
+        <input id="hi" type="text"></label></div>
+
+	<div class="element"><label for="lo">lo </label>
+        <input id="lo" type="text"></label></div>
+
+	<div class="element"><label for="hasdata">use uploaded data </label>
+        <input id="hasdata" type="checkbox"></label></div>
+</form>
+
+
+<input type="file" id="input">
+<button type="button" onclick="myFunction()">Submit Upload</button>
+<div style="padding-top: 15px"><button type="button" onclick="gauss()">RUN</button>
+    <button type="button" style="padding-left:5px" onclick="gaussdown()">DOWNLOAD</button></div>
+
+<img id=plot />
+
+<script>
+function myFunction() {
+    var file = document.getElementById("input").files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        text = reader.result;
+    }
+    reader.readAsText(file);
+}
+</script>
+
+<script>
+    function gauss() {
+        $.getJSON($SCRIPT_ROOT + '/_gauss', {
+            vlf: $('#vlf').val(),
+            pos: $('#pos').val(),
+            inp: $('#inp').val(),
+            jfreq: $('#jfreq').val(),
+            t2: $('#t2').val(),
+            hi: $('#hi').val(),
+            lo: $('#lo').val(),
+            hasexpdata: $('#hasdata').is(':checked'),
+            expdata: text,
+            save: false,
+        }, function(data) {
+            $("#plot").attr('src', data.result);
+        });
+    }
+
+    function gaussdown() {
+        $.getJSON($SCRIPT_ROOT + '/_gauss', {
+            vlf: $('#vlf').val(),
+            pos: $('#pos').val(),
+            inp: $('#inp').val(),
+            jfreq: $('#jfreq').val(),
+            t2: $('#t2').val(),
+            hi: $('#hi').val(),
+            lo: $('#lo').val(),
+            hasexpdata: $('#hasdata').is(':checked'),
+            expdata: text,
+            save: true,
+        }, function(data) {
+            $("#plot").attr('src', data.result);
+            download("data.csv", data.dwnld);
+        });
+    }
+
+    
+    function download(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
+</script>

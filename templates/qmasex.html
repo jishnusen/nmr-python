@@ -1,0 +1,155 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.0/papaparse.js"></script>
+<script>window.jQuery || document.write('<script src="{{
+  url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  let fit_params = {};
+  let csvdata = "";
+</script>
+
+<script>
+let text = "";
+</script>
+
+<style>
+div.element {
+    padding-top: 5px;
+}
+</style>
+
+<form id="data">
+    <div><label for="sqn">sqn </label>
+        <input id="sqn" type="text"></label></div>
+    <div><label for="vlf">vlf </label>
+        <input id="vlf" type="text"></label></div>
+
+    <div class="element"><label for="eta1">eta1 </label>
+        <input id="eta1" type="text"></label></div>
+	<div class="element"><label for="eqqh1">eqqh1 </label>
+        <input id="eqqh1" type="text"></label></div>
+	<div class="element"><label for="cs1">cs1 </label>
+        <input id="cs1" type="text"></label></div>
+	<div class="element"><label for="t2one">t2one </label>
+        <input id="t2one" type="text"></label></div>
+	<div class="element"><label for="npolar1">npolar1 </label>
+        <input id="npolar1" type="text"></label></div>
+	<div class="element"><label for="nazim1">nazim1 </label>
+        <input id="nazim1" type="text"></label></div>
+
+    <div class="element"><label for="eta2">eta2 </label>
+        <input id="eta2" type="text"></label></div>
+	<div class="element"><label for="eqqh2">eqqh2 </label>
+        <input id="eqqh2" type="text"></label></div>
+	<div class="element"><label for="cs2">cs2 </label>
+        <input id="cs2" type="text"></label></div>
+	<div class="element"><label for="t2two">t2two </label>
+        <input id="t2two" type="text"></label></div>
+	<div class="element"><label for="npolar2">npolar2 </label>
+        <input id="npolar2" type="text"></label></div>
+	<div class="element"><label for="nazim2">nazim2 </label>
+        <input id="nazim2" type="text"></label></div>
+
+	<div class="element"><label for="hi">hi </label>
+        <input id="hi" type="text"></label></div>
+	<div class="element"><label for="lo">lo </label>
+        <input id="lo" type="text"></label></div>
+	<div class="element"><label for="jfreq">jfreq </label>
+        <input id="jfreq" type="text"></label></div>
+
+
+	<div class="element"><label for="hasdata">use uploaded data </label>
+        <input id="hasdata" type="checkbox"></label></div>
+</form>
+
+
+<input type="file" id="input">
+<button type="button" onclick="myFunction()">Submit Upload</button>
+<div style="padding-top: 15px"><button type="button" onclick="qmasex(false)">RUN</button>
+    <button type="button" style="padding-left:5px" onclick="qmasex(true)">DOWNLOAD</button></div>
+
+<img id=plot />
+
+<script>
+function myFunction() {
+    var file = document.getElementById("input").files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        text = reader.result;
+    }
+    reader.readAsText(file);
+}
+</script>
+
+<script>
+    function qmasex(dnld) {
+        $.getJSON($SCRIPT_ROOT + '/_qmasex', {
+            sqn: $('#sqn').val(),
+            vlf: $('#vlf').val(),
+            eta1: $('#eta1').val(),
+            eqqh1: $('#eqqh1').val(),
+            cs1: $('#cs1').val(),
+            t2one: $('#t2one').val(),
+            npolar1: $('#npolar1').val(),
+            nazim1: $('#nazim1').val(),
+            eta2: $('#eta2').val(),
+            eqqh2: $('#eqqh2').val(),
+            cs2: $('#cs2').val(),
+            t2two: $('#t2two').val(),
+            npolar2: $('#npolar2').val(),
+            nazim2: $('#nazim2').val(),
+            hi: $('#hi').val(),
+            lo: $('#lo').val(),
+            jfreq: $('#jfreq').val(),
+            hasexpdata: $('#hasdata').is(':checked'),
+            expdata: text,
+            save: dnld,
+        }, function(data) {
+            $("#plot").attr('src', data.result);
+            if (dnld) download("data.csv", data.dwnld);
+        });
+    }
+
+    // function qmasexdown() {
+    //     $.getJSON($SCRIPT_ROOT + '/_qmasex', {
+    //         sqn: $('#sqn').val(),
+    //         vlf: $('#vlf').val(),
+    //         eta1: $('#eta1').val(),
+    //         eqqh1: $('#eqqh1').val(),
+    //         cs1: $('#cs1').val(),
+    //         t2one: $('#t2one').val(),
+    //         npolar1: $('#npolar1').val(),
+    //         nazim1: $('#nazim1').val(),
+    //         eta2: $('#eta2').val(),
+    //         eqqh2: $('#eqqh2').val(),
+    //         cs2: $('#cs2').val(),
+    //         t2two: $('#t2two').val(),
+    //         npolar2: $('#npolar2').val(),
+    //         nazim2: $('#nazim2').val(),
+    //         hi: $('#hi').val(),
+    //         lo: $('#lo').val(),
+    //         jfreq: $('#jfreq').val(),
+    //         hasexpdata: $('#hasdata').is(':checked'),
+    //         expdata: text,
+    //         save: true,
+    //     }, function(data) {
+    //         $("#plot").attr('src', data.result);
+    //         download("data.csv", data.dwnld);
+    //     });
+    // }
+
+    
+    function download(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
+</script>

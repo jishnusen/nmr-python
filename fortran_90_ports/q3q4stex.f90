@@ -1,5 +1,6 @@
 !     file: q3q4stex.f
     subroutine q3q4stex(f,g,vlf,avspara,avsperp,ncth,jfreq,t2,fu,fl,posq4)
+    implicit none
     dimension f(1000),w(61000),g(1000),q4int(5000)
 !f2py intent(out) f
 !f2py intent(out) g
