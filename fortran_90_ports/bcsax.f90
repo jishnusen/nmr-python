@@ -8,7 +8,7 @@
 !       For details see Mehring's book, p. 61.
 !
 !------------------------------------------------------------------------
-    subroutine bcsax(f,g,s11,s22,s33,jfreq,t2,fu,fl)
+    subroutine bcsax(f,g,s11,s22,s33,jfreq,t2,fu,fl,w0)
     dimension tint(500000)
     dimension g(1000)
     dimension f(1000)
@@ -16,7 +16,7 @@
     !f2py intent(out) g
     dimension w(500000)
     complex :: l
-    real :: s11,s22,s33,jfreq,t2
+    real :: s11,s22,s33,jfreq,t2,w0
     integer fu,fl,smo
     pi=22.0/7.0
     smo=1
@@ -24,7 +24,6 @@
 !-----------------------------------------------------------------------
 !	Reading input parameters interactively
 !-----------------------------------------------------------------------
-    w0=125.26
 !**********These are chemical shifts from the powder pattern**********
     wfu=fu*w0
     wfl=fl*w0
