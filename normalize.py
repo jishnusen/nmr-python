@@ -48,7 +48,7 @@ def normalize():
     zero = np.trapz(y[idx], x[idx]) / (x_max - x_min)
     print(zero)
     
-    g = (y-np.min(y) + zero)/(np.max(y)-np.min(y) + zero)
+    g = (y-zero)/(np.max(y)-zero)
     a.plot(x, g)
     canvas.draw()
 
