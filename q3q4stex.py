@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import fortran_90_ports.q3q4stexfort as fort
 import pandas as pd
 import tkinter as tk
 from tkinter import filedialog
