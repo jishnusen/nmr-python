@@ -190,7 +190,7 @@ class BCSax:
     def save(self):
         csv = ""
         out = filedialog.asksaveasfile(mode='w')
-        for i in range(0, g.size):
+        for i in range(0, self.g.size):
             csv += f"{float(self.f[i])},{float(self.g[i])}\n"
         out.write(csv)
         out.close()

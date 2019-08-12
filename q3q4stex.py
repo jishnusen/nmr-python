@@ -1,8 +1,66 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import fortran_90_ports.q3q4stexfort as fort
+import pandas as pd
+import tkinter as tk
+from tkinter import filedialog
 
 class Q3Q4:
+    def __init__(self, root):
+        tk.Label(root, text="Larmor Frequency (MHz)").grid(row=0)
+        tk.Label(root, text="Delta-Parallel (ppm)").grid(row=1)
+        tk.Label(root, text="Delta-Perpendicular (ppm)").grid(row=2)
+        tk.Label(root, text="Number of cosine-thetas").grid(row=3)
+        tk.Label(root, text="jump frequency (Hz)").grid(row=4)
+        tk.Label(root, text="T2 (seconds)").grid(row=5)
+        tk.Label(root, text="upper plot limit (ppm)").grid(row=6)
+        tk.Label(root, text="lower plot limit (ppm)").grid(row=7)
+        tk.Label(root, text="Gaussian Peak Position (ppm)").grid(row=8)
+        self.v = tk.StringVar()
+        self.user_data = ""
+        tk.Label(root, textvariable=self.v).grid(row=9, column = 1)
+
+        self.e_vlf = tk.Entry(root)
+        self.e_avspara = tk.Entry(root)
+        self.e_avsperp = tk.Entry(root)
+        self.e_ncth = tk.Entry(root)
+        self.e_jfreq = tk.Entry(root)
+        self.e_t2 = tk.Entry(root)
+        self.e_hi = tk.Entry(root)
+        self.e_lo = tk.Entry(root)
+        self.e_posq4 = tk.Entry(root)
+
+        self.e_vlf.grid(row=0, column=1)
+        self.e_avspara.grid(row=1, column=1)
+        self.e_avsperp.grid(row=2, column=1)
+        self.e_ncth.grid(row=3, column=1)
+        self.e_jfreq.grid(row=4, column=1)
+        self.e_t2.grid(row=5, column=1)
+        self.e_hi.grid(row=6, column=1)
+        self.e_lo.grid(row=7, column=1)
+        self.e_posq4.grid(row=8, column=1)
+
+        tk.Button(root, text="BROWSE", command = self.filechoose).grid(row=9)
+        tk.Button(root, text="PLOT", command = self.callback).grid(row=10)
+        tk.Button(root, text="SAVE", command = self.save).grid(row=10, column = 1)
+
+    def plot(self, vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, user_data):
+        self.f,self.g = self.q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4)
+
+        gen_data = plt.plot(self.f,self.g,label="Simulation") 
+
+        data = user_data != ""
+
+        if data:
+            infile = pd.read_csv(user_data)
+            user_data = plt.plot(infile.iloc[:, 0], infile.iloc[:, 1], label="User Data")
+
+        plt.legend(loc='upper right')
+
+        plt.gca().invert_xaxis()
+        plt.xlim(fl, fu)
+        plt.show()
+
     @staticmethod
     def q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4):
         f = np.zeros(1000)
@@ -115,7 +173,27 @@ class Q3Q4:
             g[i] = g[i] / rmax
             f[i] = ppm
 
-        plt.plot(f,g)
-        plt.show()
+        return f,g
 
-Q3Q4.q3q4stex(100., 100., -100., 1000, 1., 0.001, 200., -200., 0.)
+    def callback(self):
+        self.plot(float(self.e_vlf.get()), float(self.e_avspara.get()), float(self.e_avsperp.get()), int(self.e_ncth.get()), 
+            float(self.e_jfreq.get()), float(self.e_t2.get()), float(self.e_hi.get()), float(self.e_lo.get()), float(self.e_posq4.get()),
+            self.user_data)
+
+    def filechoose(self):
+        self.user_data = filedialog.askopenfilename()
+        self.v.set(self.user_data.rsplit('/', 1)[-1])
+
+    def save(self):
+        csv = ""
+        out = filedialog.asksaveasfile(mode='w')
+        for i in range(0, self.g.size):
+            csv += f"{float(self.f[i])},{float(self.g[i])}\n"
+        out.write(csv)
+        out.close()
+        
+if __name__ == "__main__":
+    master = tk.Tk()
+
+    Q3Q4(master)
+    master.mainloop()
