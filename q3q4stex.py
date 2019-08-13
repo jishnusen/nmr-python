@@ -15,9 +15,10 @@ class Q3Q4:
         tk.Label(root, text="upper plot limit (ppm)").grid(row=6)
         tk.Label(root, text="lower plot limit (ppm)").grid(row=7)
         tk.Label(root, text="Gaussian Peak Position (ppm)").grid(row=8)
+        tk.Label(root, text="Standard Deviation (ppm)").grid(row=9)
         self.v = tk.StringVar()
         self.user_data = ""
-        tk.Label(root, textvariable=self.v).grid(row=9, column = 1)
+        tk.Label(root, textvariable=self.v).grid(row=10, column = 1)
 
         self.e_vlf = tk.Entry(root)
         self.e_avspara = tk.Entry(root)
@@ -28,6 +29,7 @@ class Q3Q4:
         self.e_hi = tk.Entry(root)
         self.e_lo = tk.Entry(root)
         self.e_posq4 = tk.Entry(root)
+        self.e_width = tk.Entry(root)
 
         self.e_vlf.grid(row=0, column=1)
         self.e_avspara.grid(row=1, column=1)
@@ -38,13 +40,14 @@ class Q3Q4:
         self.e_hi.grid(row=6, column=1)
         self.e_lo.grid(row=7, column=1)
         self.e_posq4.grid(row=8, column=1)
+        self.e_width.grid(row=9, column = 1)
 
-        tk.Button(root, text="BROWSE", command = self.filechoose).grid(row=9)
-        tk.Button(root, text="PLOT", command = self.callback).grid(row=10)
-        tk.Button(root, text="SAVE", command = self.save).grid(row=10, column = 1)
+        tk.Button(root, text="BROWSE", command = self.filechoose).grid(row=10)
+        tk.Button(root, text="PLOT", command = self.callback).grid(row=11)
+        tk.Button(root, text="SAVE", command = self.save).grid(row=11, column = 1)
 
-    def plot(self, vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, user_data):
-        self.f,self.g = self.q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4)
+    def plot(self, vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, width, user_data):
+        self.f,self.g = self.q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, width)
 
         gen_data = plt.plot(self.f,self.g,label="Simulation") 
 
@@ -61,7 +64,7 @@ class Q3Q4:
         plt.show()
 
     @staticmethod
-    def q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4):
+    def q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, width):
         f = np.zeros(1000)
         w = np.zeros(61000)
         g = np.zeros(1000)
@@ -84,8 +87,6 @@ class Q3Q4:
         for i in range(0, nf):
             f[i] = fl + df * float(i - 1)
         
-        width = 22.0
-
         deltaq4 = (2.0 * width / 160.0)
         width = width / 2.354
         width = 1.0 / width
@@ -176,7 +177,8 @@ class Q3Q4:
 
     def callback(self):
         self.plot(float(self.e_vlf.get()), float(self.e_avspara.get()), float(self.e_avsperp.get()), int(self.e_ncth.get()), 
-            float(self.e_jfreq.get()), float(self.e_t2.get()), float(self.e_hi.get()), float(self.e_lo.get()), float(self.e_posq4.get()),
+            float(self.e_jfreq.get()), float(self.e_t2.get()), float(self.e_hi.get()), float(self.e_lo.get()), 
+            float(self.e_posq4.get()), float(self.e_width.get()),
             self.user_data)
 
     def filechoose(self):
