@@ -151,7 +151,7 @@ class Quadex:
         gmax = 0.0
 
         for i in range(0, npts):
-            wf = lo+dwf*float(i-1)
+            wf = lo+dwf*float(i)
             l = complex(0.0, 0.0)
             for j in range(0, nfreq1):
                 l = l+complex(1.0, 0.0)/complex(ar1, wf-freq1[j])
@@ -186,7 +186,7 @@ class Quadex:
             ct2 = ct*ct
             for j in range(0, nazim):
                 k = k+1
-                phi = dazim*float(j-1)
+                phi = dazim*float(j)
                 c2phi = np.cos(2.0*phi)
                 aphi = -3.375-(2.25*eta*c2phi)-(.375*eta*eta*c2phi*c2phi)
                 bphi = 3.75-(.5*eta*eta)+(2.0*eta*c2phi) + \
