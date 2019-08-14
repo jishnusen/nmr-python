@@ -5,6 +5,7 @@ import peak_combiner
 import normalizer
 import q3q4stex
 import quadex2
+import qmasex
 
 
 root = tk.Tk()
@@ -36,6 +37,9 @@ def create_q3q4():
 
 def create_quadex2():
     quadex2.Quadex(toplevel())
+
+def create_qmasex():
+    qmasex.Qmasex(toplevel())
     
 def create_peak():
     peak_combiner.PeakCombiner(toplevel())
@@ -47,7 +51,8 @@ bcsax_button = tk.Button(root, text="BCSAX", command = create_bcsax).grid(row=0,
 gauss_button = tk.Button(root, text="GAUSS", command = create_gauss).grid(row=1, sticky=tk.N+tk.S+tk.E+tk.W)
 gauss_button = tk.Button(root, text="Q3Q4", command = create_q3q4).grid(row=2, sticky=tk.N+tk.S+tk.E+tk.W)
 quadex_button = tk.Button(root, text="QUADEX2", command = create_quadex2).grid(row=3, sticky=tk.N+tk.S+tk.E+tk.W)
-peak_button = tk.Button(root, text="PEAK COMBINER", command = create_peak).grid(row=4, sticky=tk.N+tk.S+tk.E+tk.W)
-norm_button = tk.Button(root, text="NORMALIZER", command = create_norm).grid(row=5, sticky=tk.N+tk.S+tk.E+tk.W)
+qmasex_button = tk.Button(root, text="QMASEX", command = create_qmasex).grid(row=4, sticky=tk.N+tk.S+tk.E+tk.W)
+peak_button = tk.Button(root, text="PEAK COMBINER", command = create_peak).grid(row=5, sticky=tk.N+tk.S+tk.E+tk.W)
+norm_button = tk.Button(root, text="NORMALIZER", command = create_norm).grid(row=6, sticky=tk.N+tk.S+tk.E+tk.W)
 
 root.mainloop()
