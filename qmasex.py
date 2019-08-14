@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import filedialog
 import pandas as pd
-import fortran_90_ports.qmasexfort as fort
-
 
 class Qmasex:
     def __init__(self, master):
