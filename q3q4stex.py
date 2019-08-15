@@ -9,21 +9,23 @@ class Q3Q4:
         tk.Label(root, text="Larmor Frequency (MHz)").grid(row=0)
         tk.Label(root, text="Delta-Parallel (ppm)").grid(row=1)
         tk.Label(root, text="Delta-Perpendicular (ppm)").grid(row=2)
-        tk.Label(root, text="Number of cosine-thetas").grid(row=3)
-        tk.Label(root, text="jump frequency (Hz)").grid(row=4)
-        tk.Label(root, text="T2 (seconds)").grid(row=5)
-        tk.Label(root, text="upper plot limit (ppm)").grid(row=6)
-        tk.Label(root, text="lower plot limit (ppm)").grid(row=7)
-        tk.Label(root, text="Gaussian Peak Position (ppm)").grid(row=8)
-        tk.Label(root, text="Standard Deviation (ppm)").grid(row=9)
+        tk.Label(root, text="Number of cosine-thetas for q4").grid(row=3)
+        tk.Label(root, text="Number of cosine-thetas for q3").grid(row=4)
+        tk.Label(root, text="jump frequency (Hz)").grid(row=5)
+        tk.Label(root, text="T2 (seconds)").grid(row=6)
+        tk.Label(root, text="upper plot limit (ppm)").grid(row=7)
+        tk.Label(root, text="lower plot limit (ppm)").grid(row=8)
+        tk.Label(root, text="Gaussian Peak Position (ppm)").grid(row=9)
+        tk.Label(root, text="Standard Deviation (ppm)").grid(row=10)
         self.v = tk.StringVar()
         self.user_data = ""
-        tk.Label(root, textvariable=self.v).grid(row=10, column = 1)
+        tk.Label(root, textvariable=self.v).grid(row=11, column = 1)
 
         self.e_vlf = tk.Entry(root)
         self.e_avspara = tk.Entry(root)
         self.e_avsperp = tk.Entry(root)
-        self.e_ncth = tk.Entry(root)
+        self.e_ncth1 = tk.Entry(root)
+        self.e_ncth2 = tk.Entry(root)
         self.e_jfreq = tk.Entry(root)
         self.e_t2 = tk.Entry(root)
         self.e_hi = tk.Entry(root)
@@ -34,20 +36,21 @@ class Q3Q4:
         self.e_vlf.grid(row=0, column=1)
         self.e_avspara.grid(row=1, column=1)
         self.e_avsperp.grid(row=2, column=1)
-        self.e_ncth.grid(row=3, column=1)
-        self.e_jfreq.grid(row=4, column=1)
-        self.e_t2.grid(row=5, column=1)
-        self.e_hi.grid(row=6, column=1)
-        self.e_lo.grid(row=7, column=1)
-        self.e_posq4.grid(row=8, column=1)
-        self.e_width.grid(row=9, column = 1)
+        self.e_ncth1.grid(row=3, column=1)
+        self.e_ncth2.grid(row=4, column=1)
+        self.e_jfreq.grid(row=5, column=1)
+        self.e_t2.grid(row=6, column=1)
+        self.e_hi.grid(row=7, column=1)
+        self.e_lo.grid(row=8, column=1)
+        self.e_posq4.grid(row=9, column=1)
+        self.e_width.grid(row=10, column = 1)
 
-        tk.Button(root, text="BROWSE", command = self.filechoose).grid(row=10)
-        tk.Button(root, text="PLOT", command = self.callback).grid(row=11)
-        tk.Button(root, text="SAVE", command = self.save).grid(row=11, column = 1)
+        tk.Button(root, text="BROWSE", command = self.filechoose).grid(row=11)
+        tk.Button(root, text="PLOT", command = self.callback).grid(row=12)
+        tk.Button(root, text="SAVE", command = self.save).grid(row=12, column = 1)
 
-    def plot(self, vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, width, user_data):
-        self.f,self.g = self.q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, width)
+    def plot(self, vlf, avspara, avsperp, ncth1, ncth2, jfreq, t2, fu, fl, posq4, width, user_data):
+        self.f,self.g = self.q3q4stex(vlf, avspara, avsperp, ncth1, ncth2, jfreq, t2, fu, fl, posq4, width)
 
         gen_data = plt.plot(self.f,self.g,label="Simulation") 
 
@@ -64,7 +67,7 @@ class Q3Q4:
         plt.show()
 
     @staticmethod
-    def q3q4stex(vlf, avspara, avsperp, ncth, jfreq, t2, fu, fl, posq4, width):
+    def q3q4stex(vlf, avspara, avsperp, ncth1, ncth2, jfreq, t2, fu, fl, posq4, width):
         f = np.zeros(1000)
         w = np.zeros(61000)
         g = np.zeros(1000)
@@ -78,7 +81,6 @@ class Q3Q4:
         f0 = vlf
         w0 = 2 * np.pi * f0
 
-        dcth = 2.0 / float(ncth - 1)
         wfu = fu * w0
         wfl = fl * w0
         dwf = (wfu - wfl) / float(nf - 1)
@@ -102,7 +104,7 @@ class Q3Q4:
             sum = sum + q4int[i]
         
         for i in range(0, 161):
-            q4int[i] = q4int[i] * float(ncth) / sum
+            q4int[i] = q4int[i] * float(ncth1) / sum
 
         k = 0
         m = 0
@@ -110,19 +112,19 @@ class Q3Q4:
         for i in range(0, 161):
             m = m + int(round(q4int[i]))
             for j in range(k,m):
-                w[ncth + j] = pq4[i] * w0
+                w[ncth1 + j] = pq4[i] * w0
             
             k = m
         
-        jfreq = jfreq / (float(2*ncth) - 1.0)
-        ar = float(2* ncth) * jfreq + 1.0 / t2
+        jfreq = jfreq / (float(ncth1 + ncth2) - 1.0)
+        ar = float(ncth1 + ncth2) * jfreq + 1.0 / t2
 
         sum = 0.0
         gwidth = 20.0
         deltagw = 1.5 * gwidth / 40.0
         gwidth = 1.0 / (gwidth / 2.354)
 
-        for i in range(0, 31):
+        for i in range(0, 41):
             sperp[i] = avsperp - float(21 - i) * deltagw
             spara[i] = avspara - float(21 - i) * deltagw
             gb = 0.0
@@ -133,7 +135,7 @@ class Q3Q4:
             sum = sum + gb
         
         for i in range(0, 41):
-            gnsperp[i] = gnsperp[i] * (float(ncth) / sum)
+            gnsperp[i] = gnsperp[i] * (float(ncth2) / sum)
         
         ik = 0
         im = 0
@@ -153,7 +155,7 @@ class Q3Q4:
             
             ik = im
         
-        ncth = 2 * ncth
+        ncth = ncth1 + ncth2
         for j in range(0, nf):
             wf = wfl + dwf * float(j)
             l = complex(0.0, 0.0)
@@ -176,7 +178,7 @@ class Q3Q4:
         return f,g
 
     def callback(self):
-        self.plot(float(self.e_vlf.get()), float(self.e_avspara.get()), float(self.e_avsperp.get()), int(self.e_ncth.get()), 
+        self.plot(float(self.e_vlf.get()), float(self.e_avspara.get()), float(self.e_avsperp.get()), int(self.e_ncth1.get()), int(self.e_ncth2.get()),
             float(self.e_jfreq.get()), float(self.e_t2.get()), float(self.e_hi.get()), float(self.e_lo.get()), 
             float(self.e_posq4.get()), float(self.e_width.get()),
             self.user_data)
